@@ -91,4 +91,43 @@ average <- function(x){
 average(weather$AirTemp)
 
 
+# Prompt #1
+# You want to see if the solar radiation measurements experienced any issues with build up or accumulation on the sensor in May and June of 2021
+
+# Examining Solar Radiation using a bar plot for May
+ggplot(data=weather[weather$doy > 121 & weather$doy < 151 ,],
+       aes(x=dateF,
+           y=SolRad))+
+  geom_col(color="royalblue4")+
+  theme_classic()
+
+# Examining Solar Radiation using a bar plot for June
+ggplot(data=weather[weather$doy > 151 & weather$doy < 180 ,],
+       aes(x=dateF,
+           y=SolRad))+
+  geom_col(color="royalblue4")+
+  theme_classic()
+
+# Examining Solar Radiation using a bar plot for September
+ggplot(data=weather[weather$doy > 244 & weather$doy < 274 ,],
+       aes(x=dateF,
+           y=SolRad))+
+  geom_col(color="royalblue4")+
+  theme_classic()
+
+
+
+# Prompt #2 
+# Check for any date time issues using the function created in the tutorial
+timeCheck900 <- function(x){
+  intervals <- x[-length(x)] %--% x[-1]
+  interval_times <- int_length(intervals)
+  intervals[interval_times != 900]
+  
+}
+# run on weather data
+timeCheck900(weather$dateF)
+
+
+
 

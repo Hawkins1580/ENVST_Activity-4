@@ -115,16 +115,20 @@ ggplot(data=weather[weather$doy > 244 & weather$doy < 274 ,],
   geom_col(color="royalblue4")+
   theme_classic()
 
+# WE BELIEVE THAT THE DATA IS OKAY
+
 
 
 # Prompt #2 
 # Check for any date time issues using the function created in the tutorial
+# Creating function hows intervals that are not equal to 15 minutes
 timeCheck900 <- function(x){
   intervals <- x[-length(x)] %--% x[-1]
   interval_times <- int_length(intervals)
   intervals[interval_times != 900]
   
 }
+
 # run on weather data
 timeCheck900(weather$dateF)
 

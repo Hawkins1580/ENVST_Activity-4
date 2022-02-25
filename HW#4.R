@@ -78,18 +78,17 @@ timeCheck900 <- function(x){
 # run on weather data
 timeCheck900(weather$dateF)
 
-
-
-# Start of in-class prompts
-
 # Creating average that automatically excludes N/A
-average <- function(x){
+Average_AirTemp <- function(x){
   x.no = na.omit(x)
   sum(x.no)/length(x.no)
 }
+Average_AirTemp(weather$AirTemp)
 
-average(weather$AirTemp)
 
+
+
+# Start of in-class prompts
 
 # Prompt #1
 # You want to see if the solar radiation measurements experienced any issues with build up or accumulation on the sensor in May and June of 2021
@@ -169,6 +168,57 @@ weather$BatVolt_InVOLTS <- weather$BatVolt / 1000
 weather$BatVoltFLAG <- ifelse(weather$BatVolt_InVOLTS < 8.5, # check if below 8.5
                              1, # if true: set flag to 1
                              0) # if false: set flag to zero
+
+
+# Question #3
+# You should also create a function that checks for observations that are in 
+# unrealistic data ranges in air temperature and solar radiation.
+
+# Air Temperature
+
+# Finding standard deviation and omitted NA
+StdDev_AirTemp <- sd(weather$AirTemp,na.rm=TRUE) 
+StdDev_AirTemp
+
+OUTLIERS_AirTemp <- function(x) {
+  mean_x <- mean(x, na.rm = TRUE)
+  sd_x <- sd(x, na.rm = TRUE)
+  upper <- (3*sd(x) + mean(x))
+  lower <- (mean(x) - 3*sd(x))
+  replace(x, x > upper | x < lower, NA)
+}
+
+OUTLIERS_AirTemp(weather$AirTemp)
+
+min(weather$AirTemp, na.rm = TRUE)
+
+# Plotting Air Temp to visualize
+ggplot(data=weather,
+       aes(x=dateF,
+           y=AirTemp))+
+  geom_col(color="royalblue4")+
+  theme_classic()
+
+
+# Solar Radiation
+
+
+
+
+# Question #4
+# Make a plot of winter air temperatures in Jan - Mar of 2021. 
+# Check for persistence issues that might indicate snow accumulation on the sensor.
+
+# Examining Winter Air Temps using a bar plot for January to March 2021
+ggplot(data=weather[weather$doy > 1 & weather$doy < 90 & weather$year == 2021,],
+       aes(x=dateF,
+           y=AirTemp))+
+  geom_col(color="royalblue4")+
+  theme_classic()
+
+
+
+
 
 
 

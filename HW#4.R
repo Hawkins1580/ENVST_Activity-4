@@ -33,7 +33,7 @@ ggplot(data=weather[weather$doy > 121 & weather$doy < 274 ,],
   theme_classic()
 
 
-# Adding a column to weather:
+# Adding a column to weather for QC
 weather$precip.QC <- ifelse(weather$doy >= 121 & weather$doy <= 188 & weather$year == 2021, 
                             # evaluate if the doy is between May 1 and July 7 2021
                             NA, # value if true
@@ -131,6 +131,47 @@ timeCheck900 <- function(x){
 
 # run on weather data
 timeCheck900(weather$dateF)
+
+
+
+# Starting Homework
+
+# Question #1
+# You want to exclude any precipitation occurring in temperatures below zero. 
+# You also want to check that no precipitation measurements are used if the X and Y level observations are more than 2 degrees.
+
+# Creating and adding a column to weather excluding freezing temps and if x/y degrees > +/- 2
+weather$Precip_QC<- ifelse(weather$AirTemp < 0 & # if air temp < 0
+                            weather$XLevel < -2 & # checking if x level is +/- 2 degrees
+                              weather$XLevel > 2 & # checking if x level is +/- 2 degrees
+                              weather$YLevel < -2 & # checking if y level is +/- 2 degrees
+                              weather$YLevel > 2, # checking if y level is +/- 2 degrees
+                            NA, # value if true
+                            weather$precip.QC) # value if false: uses original precipitation observation
+
+# Plotting new precipitation
+ggplot(data=weather,
+       aes(x=dateF,
+           y=Precip_QC))+
+  geom_col(color="royalblue4")+
+  theme_classic()
+
+# Indicate how many missing precipitation values are in your data
+sum(is.na(weather$Precip_QC))
+
+
+# Question #2
+# Create a data flag that warns a user if the battery voltage falls below 8.5 Volts
+
+# Converting mV to V
+weather$BatVolt_InVOLTS <- weather$BatVolt / 1000
+
+weather$BatVoltFLAG <- ifelse(weather$BatVolt_InVOLTS < 8.5, # check if below 8.5
+                             1, # if true: set flag to 1
+                             0) # if false: set flag to zero
+
+
+
 
 
 

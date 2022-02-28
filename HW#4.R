@@ -140,19 +140,33 @@ timeCheck900(weather$dateF)
 # You also want to check that no precipitation measurements are used if the X and Y level observations are more than 2 degrees.
 
 # Creating and adding a column to weather excluding freezing temps and if x/y degrees > +/- 2
-weather$Precip_QC<- ifelse(weather$AirTemp < 0 & # if air temp < 0
-                            weather$XLevel < -2 & # checking if x level is +/- 2 degrees
-                              weather$XLevel > 2 & # checking if x level is +/- 2 degrees
-                              weather$YLevel < -2 & # checking if y level is +/- 2 degrees
-                              weather$YLevel > 2, # checking if y level is +/- 2 degrees
-                            NA, # value if true
-                            weather$precip.QC) # value if false: uses original precipitation observation
+weather$Precip_QC<- ifelse(weather$AirTemp < 0 | # if air temp < 0
+                          weather$XLevel < -2 | # checking if x level is +/- 2 degrees
+                          weather$XLevel > 2 | # checking if x level is +/- 2 degrees
+                          weather$YLevel < -2 | # checking if y level is +/- 2 degrees
+                          weather$YLevel > 2, # checking if y level is +/- 2 degrees
+                          NA, # value if true
+                          weather$precip.QC) # value if false: uses original precipitation observation
+
+# Plotting old precipitation
+ggplot(data=weather,
+       aes(x=dateF,
+           y=precip.QC))+
+  geom_col(color="royalblue4")+
+  labs(x="Date", y="Precipitation (in mm)")+ # make axis labels
+  ggtitle("Precipitation Levels at Hamilton College:",
+          subtitle = "Including Frozen Temps & X/Y Level Malfunctions")+
+  theme_classic()
+
 
 # Plotting new precipitation
 ggplot(data=weather,
        aes(x=dateF,
            y=Precip_QC))+
-  geom_col(color="royalblue4")+
+  geom_col(color="turquoise4")+
+  labs(x="Date", y="Precipitation (in mm)")+ # make axis labels
+  ggtitle("Precipitation Levels at Hamilton College:",
+          subtitle = "Excluding Frozen Temps & X/Y Level Malfunctions")+
   theme_classic()
 
 # Indicate how many missing precipitation values are in your data
@@ -213,7 +227,10 @@ ggplot(data=weather,
 ggplot(data=weather[weather$doy > 1 & weather$doy < 90 & weather$year == 2021,],
        aes(x=dateF,
            y=AirTemp))+
-  geom_col(color="royalblue4")+
+  geom_col(color="darkslategray3")+
+  ggtitle("Air Temperature at Hamilton College in 2021:",
+          subtitle = "Another Cold Winter & Crazy Spring")+
+  labs(x="Month", y="Air Temperature (in Celcuis)")+ # make axis labels
   theme_classic()
 
 

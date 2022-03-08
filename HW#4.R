@@ -46,7 +46,7 @@ weather$FreezeFlag <- ifelse(weather$AirTemp <= 0, # check if at or below zero
                              0) # if false: set flag to zero
 
 
-#interval data: look at first 2 observations as interval
+# interval data: look at first 2 observations as interval
 # Time 1 %--% Time 2
 weather$dateF[1] %--% weather$dateF[2]
 
@@ -125,7 +125,6 @@ timeCheck900 <- function(x){
   intervals <- x[-length(x)] %--% x[-1]
   interval_times <- int_length(intervals)
   intervals[interval_times != 900]
-  
 }
 
 # run on weather data
@@ -148,17 +147,6 @@ weather$Precip_QC<- ifelse(weather$AirTemp < 0 | # if air temp < 0
                           NA, # value if true
                           weather$precip.QC) # value if false: uses original precipitation observation
 
-# Plotting old precipitation
-ggplot(data=weather,
-       aes(x=dateF,
-           y=precip.QC))+
-  geom_col(color="royalblue4")+
-  labs(x="Date", y="Precipitation (in mm)")+ # make axis labels
-  ggtitle("Precipitation Levels at Hamilton College:",
-          subtitle = "Including Frozen Temps & X/Y Level Malfunctions")+
-  theme_classic()
-
-
 # Plotting new precipitation
 ggplot(data=weather,
        aes(x=dateF,
@@ -169,7 +157,7 @@ ggplot(data=weather,
           subtitle = "Excluding Frozen Temps & X/Y Level Malfunctions")+
   theme_classic()
 
-# Indicate how many missing precipitation values are in your data
+# Indicate how many missing precipitation values are in my data
 sum(is.na(weather$Precip_QC))
 
 
@@ -190,21 +178,19 @@ weather$BatVoltFLAG <- ifelse(weather$BatVolt_InVOLTS < 8.5, # check if below 8.
 
 # Air Temperature
 
-# Finding standard deviation and omitted NA
-StdDev_AirTemp <- sd(weather$AirTemp,na.rm=TRUE) 
-StdDev_AirTemp
+# Summarizing Air Temp
+summary(weather$AirTemp,na.rm=TRUE)
 
 OUTLIERS_AirTemp <- function(x) {
-  mean_x <- mean(x, na.rm = TRUE)
-  sd_x <- sd(x, na.rm = TRUE)
-  upper <- (3*sd(x) + mean(x))
-  lower <- (mean(x) - 3*sd(x))
-  replace(x, x > upper | x < lower, NA)
-}
+  mean_x = mean(x, na.rm = TRUE)
+  sd_x = sd(x, na.rm = TRUE)
+  upper <- (3*sd_x + mean_x)
+  lower <- (mean_x - 3*sd_x)
+  length(x[x > upper | x < lower])
+  }
 
 OUTLIERS_AirTemp(weather$AirTemp)
 
-min(weather$AirTemp, na.rm = TRUE)
 
 # Plotting Air Temp to visualize
 ggplot(data=weather,
@@ -215,6 +201,28 @@ ggplot(data=weather,
 
 
 # Solar Radiation
+
+# Summarizing Solar Radiation
+summary(weather$SolRad,na.rm=TRUE)
+
+OUTLIERS_SolRad <- function(x) {
+  mean_x = mean(x, na.rm = TRUE)
+  sd_x = sd(x, na.rm = TRUE)
+  upper <- (3*sd_x + mean_x)
+  lower <- (mean_x - 3*sd_x)
+  length(x[x > upper | x < lower])
+}
+
+OUTLIERS_SolRad(weather$SolRad)
+
+
+# Plotting Air Temp to visualize
+ggplot(data=weather,
+       aes(x=dateF,
+           y=SolRad))+
+  geom_col(color="royalblue4")+
+  theme_classic()
+
 
 
 
